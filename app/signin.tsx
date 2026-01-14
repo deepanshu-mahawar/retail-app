@@ -10,13 +10,15 @@ import {
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Fontisto from "@expo/vector-icons/Fontisto";
+import Feather from "@expo/vector-icons/Feather";
+
 import { Link, useRouter } from "expo-router";
 
 const SigninScreen = () => {
   const router = useRouter();
-  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isVisible, setIsVisible] = useState(false);
 
   //   const handleSignup = () => {
   //     if (!fullName || !email || !password) {
@@ -73,12 +75,21 @@ const SigninScreen = () => {
             style={styles.input}
             placeholder="Enter your password"
             placeholderTextColor="#00000061"
-            secureTextEntry
+            secureTextEntry={!isVisible}
             value={password}
             onChangeText={setPassword}
           />
+          <TouchableOpacity onPress={() => setIsVisible((prev) => !prev)}>
+            {isVisible ? (
+              <Feather name="eye" size={20} color="black" />
+            ) : (
+              <Feather name="eye-off" size={20} color="black" />
+            )}
+          </TouchableOpacity>
         </View>
       </View>
+
+      <Text style={styles.forgotText}>Forgot Password?</Text>
 
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Sign Up</Text>
@@ -161,7 +172,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 170,
+    marginTop: 145,
     marginBottom: 30,
   },
   buttonText: {
@@ -197,5 +208,10 @@ const styles = StyleSheet.create({
   link: {
     color: "#ff5b27",
     fontWeight: "700",
+  },
+  forgotText: {
+    textAlign: "right",
+    fontFamily: "Poppins_500Medium",
+    color: "#ff5b27",
   },
 });
