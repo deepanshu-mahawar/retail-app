@@ -11,12 +11,14 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import { Link, useRouter } from "expo-router";
+import Feather from "@expo/vector-icons/Feather";
 
 const SignupScreen = () => {
   const router = useRouter();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isVisible, setIsVisible] = useState(false);
 
   //   const handleSignup = () => {
   //     if (!fullName || !email || !password) {
@@ -92,10 +94,17 @@ const SignupScreen = () => {
             style={styles.input}
             placeholder="Create a password"
             placeholderTextColor="#00000061"
-            secureTextEntry
+            secureTextEntry={!isVisible}
             value={password}
             onChangeText={setPassword}
           />
+          <TouchableOpacity onPress={() => setIsVisible((prev) => !prev)}>
+            {isVisible ? (
+              <Feather name="eye" size={20} color="black" />
+            ) : (
+              <Feather name="eye-off" size={20} color="black" />
+            )}
+          </TouchableOpacity>
         </View>
       </View>
 
