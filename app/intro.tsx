@@ -149,8 +149,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: "800",
-    color: "#0A0F2C",
+    color: "#000000",
     textAlign: "center",
     lineHeight: 34,
     marginBottom: 12,
@@ -158,7 +157,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 14,
-    color: "#6B7280",
+    color: "#000000a3",
     textAlign: "center",
     lineHeight: 20,
     marginBottom: 20,
@@ -189,7 +188,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   primaryButtonText: {
-    color: "#FFFFFF",
+    color: "#ffffff",
     fontSize: 16,
     fontWeight: "600",
     fontFamily: "Poppins_400Regular",
@@ -205,15 +204,15 @@ const styles = StyleSheet.create({
   },
   secondaryButtonText: {
     fontSize: 14,
-    color: "#111827",
+    color: "#000000",
     fontWeight: "500",
     fontFamily: "Poppins_400Regular",
   },
   terms: {
     fontSize: 11,
-    color: "#9CA3AF",
+    color: "#000000a3",
     textAlign: "center",
     fontFamily: "Poppins_400Regular",
-    marginBottom: 90,
+    marginBottom: 70,
   },
 });

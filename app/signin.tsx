@@ -33,7 +33,7 @@ const SigninScreen = () => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => router.back()}>
-        <MaterialIcons name="arrow-back-ios" size={20} color="black" />
+        <MaterialIcons name="arrow-back-ios" size={20} color="#000000a3" />
       </TouchableOpacity>
 
       <Text style={styles.title}>Welcome Back</Text>
@@ -123,21 +123,20 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 60,
     paddingHorizontal: 30,
-    backgroundColor: "#ffded4",
+    backgroundColor: "#FFF5F0",
   },
   title: {
     fontSize: 32,
-    fontWeight: "bold",
     marginTop: 45,
-    marginBottom: 6,
-    color: "black",
+    color: "#000000",
     fontFamily: "Poppins_600SemiBold",
   },
   subtitle: {
-    fontSize: 15,
-    color: "#0000008b",
+    fontSize: 14,
+    color: "#000000a3",
     lineHeight: 20,
     marginBottom: 40,
+    marginTop: -6,
     fontFamily: "Poppins_400Regular",
   },
   inputContainer: {
@@ -145,7 +144,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: "#4a4a4a",
+    color: "#000000",
     marginBottom: 5,
     fontFamily: "Poppins_500Medium",
   },
@@ -155,7 +154,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#00000016",
+    borderColor: "#00000061",
     paddingHorizontal: 10,
     height: 50,
   },
@@ -176,13 +175,13 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   buttonText: {
-    color: "#fff",
+    color: "#ffffff",
     fontSize: 16,
     fontFamily: "Poppins_400Regular",
   },
   terms: {
     fontSize: 13,
-    color: "#0000008b",
+    color: "#000000a3",
     textAlign: "center",
     fontFamily: "Poppins_400Regular",
   },

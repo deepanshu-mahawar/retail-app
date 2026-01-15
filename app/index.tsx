@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useEffect } from "react";
@@ -6,13 +6,14 @@ import { useRouter } from "expo-router";
 
 export default function SplashScreen() {
   const router = useRouter();
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      router.replace("/intro");
-    }, 2500);
 
-    return () => clearTimeout(timer);
-  }, []);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     router.replace("/intro");
+  //   }, 3000);
+
+  //   return () => clearTimeout(timer);
+  // }, [router]);
 
   return (
     <View style={styles.container}>
@@ -33,7 +34,7 @@ export default function SplashScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffded4",
+    backgroundColor: "#FFF5F0",
     alignItems: "center",
     justifyContent: "center",
     padding: 50,
@@ -41,13 +42,13 @@ const styles = StyleSheet.create({
   iconWrapper: {
     width: 90,
     height: 90,
-    borderRadius: 30,
+    borderRadius: 20,
     backgroundColor: "#ff5927fe",
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 20,
     elevation: 6,
-    shadowColor: "#000",
+    shadowColor: "#000000",
     shadowOpacity: 0.2,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 4 },
@@ -60,15 +61,15 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: "700",
     fontFamily: "Poppins_700Bold",
+    color: "#000000",
   },
   subtitle: {
     textAlign: "center",
     fontFamily: "Poppins_400Regular",
-    marginTop: 8,
+    marginTop: -8,
     fontSize: 14,
-    color: "#4A4A4A",
+    color: "#000000a3",
     letterSpacing: 0.5,
     maxWidth: "85%",
     lineHeight: 20,

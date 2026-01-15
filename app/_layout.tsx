@@ -49,6 +49,7 @@ export default function RootLayout() {
         <Stack.Screen name="intro" />
         <Stack.Screen name="signup" />
         <Stack.Screen name="signin" />
+        <Stack.Screen name="verification" />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
