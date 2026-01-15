@@ -7,13 +7,13 @@ import { useRouter } from "expo-router";
 export default function SplashScreen() {
   const router = useRouter();
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     router.replace("/intro");
-  //   }, 3000);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      router.replace("/intro");
+    }, 3000);
 
-  //   return () => clearTimeout(timer);
-  // }, [router]);
+    return () => clearTimeout(timer);
+  }, [router]);
 
   return (
     <View style={styles.container}>
