@@ -5,30 +5,46 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  //   Alert,
+  Alert,
 } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import { Link, useRouter } from "expo-router";
 import Feather from "@expo/vector-icons/Feather";
+import axios from "axios";
 
 const SignupScreen = () => {
   const router = useRouter();
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isVisible, setIsVisible] = useState(false);
 
-  //   const handleSignup = () => {
-  //     if (!fullName || !email || !password) {
-  //       Alert.alert('Error', 'Please fill all fields');
-  //       return;
-  //     }
-  //
-  //     Alert.alert('Success', `Account created for ${fullName}`);
-  //     console.log({ fullName, email, password });
-  //   };
+  const [user, setUser] = useState({
+    fullname: "",
+    email: "",
+    password: "",
+  });
+
+  const [isVisible, setIsVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const onSignup = async () => {
+    if (!user.fullname || !user.email || !user.password) {
+      Alert.alert("Error", "All fields are required");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      await axios.post("http://localhost:5000/api/auth/signup", user);
+
+      Alert.alert("success", "Signup successful");
+      setUser({ fullname: "", email: "", password: "" });
+    } catch (error) {
+      Alert.alert("Error", "Signup failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -54,8 +70,8 @@ const SignupScreen = () => {
             style={styles.input}
             placeholder="e.g. Alex Morgan"
             placeholderTextColor="#00000061"
-            value={fullName}
-            onChangeText={setFullName}
+            value={user.fullname}
+            onChangeText={(text) => setUser({ ...user, fullname: text })}
           />
         </View>
       </View>
@@ -75,8 +91,8 @@ const SignupScreen = () => {
             placeholderTextColor="#00000061"
             keyboardType="email-address"
             autoCapitalize="none"
-            value={email}
-            onChangeText={setEmail}
+            value={user.email}
+            onChangeText={(text) => setUser({ ...user, email: text })}
           />
         </View>
       </View>
@@ -95,8 +111,8 @@ const SignupScreen = () => {
             placeholder="Create a password"
             placeholderTextColor="#00000061"
             secureTextEntry={!isVisible}
-            value={password}
-            onChangeText={setPassword}
+            value={user.password}
+            onChangeText={(text) => setUser({ ...user, password: text })}
           />
           <TouchableOpacity onPress={() => setIsVisible((prev) => !prev)}>
             {isVisible ? (
@@ -109,7 +125,9 @@ const SignupScreen = () => {
       </View>
 
       <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Sign Up</Text>
+        <Text style={styles.buttonText}>
+          {loading ? "Loading..." : "Sign Up"}
+        </Text>
       </TouchableOpacity>
 
       <Text style={styles.terms}>Or continue with</Text>
