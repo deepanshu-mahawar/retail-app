@@ -125,7 +125,7 @@ const SignupScreen = () => {
 
       <Text style={styles.terms}>
         Already have an account?{" "}
-        <Link href={"/verification"} style={styles.link}>
+        <Link href={"/signin"} style={styles.link}>
           Sign In
         </Link>
       </Text>
