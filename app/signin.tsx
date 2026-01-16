@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Alert,
   //   Alert,
 } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -13,22 +14,39 @@ import Fontisto from "@expo/vector-icons/Fontisto";
 import Feather from "@expo/vector-icons/Feather";
 
 import { Link, useRouter } from "expo-router";
+import axios from "axios";
 
 const SigninScreen = () => {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isVisible, setIsVisible] = useState(false);
 
-  //   const handleSignup = () => {
-  //     if (!fullName || !email || !password) {
-  //       Alert.alert('Error', 'Please fill all fields');
-  //       return;
-  //     }
-  //
-  //     Alert.alert('Success', `Account created for ${fullName}`);
-  //     console.log({ fullName, email, password });
-  //   };
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [isVisible, setIsVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const onSignin = async () => {
+    if (!user.email || !user.password) {
+      Alert.alert("Error", "All fields are required");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      await axios.post("http://192.168.1.9:5000/api/auth/signin", user);
+
+      Alert.alert("success", "Signin successful");
+      setUser({ email: "", password: "" });
+      router.push("/main");
+    } catch (error) {
+      Alert.alert("Error", "Signup failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -56,8 +74,8 @@ const SigninScreen = () => {
             placeholderTextColor="#00000061"
             keyboardType="email-address"
             autoCapitalize="none"
-            value={email}
-            onChangeText={setEmail}
+            value={user.email}
+            onChangeText={(text) => setUser({ ...user, email: text })}
           />
         </View>
       </View>
@@ -76,8 +94,8 @@ const SigninScreen = () => {
             placeholder="Enter your password"
             placeholderTextColor="#00000061"
             secureTextEntry={!isVisible}
-            value={password}
-            onChangeText={setPassword}
+            value={user.password}
+            onChangeText={(text) => setUser({ ...user, password: text })}
           />
           <TouchableOpacity onPress={() => setIsVisible((prev) => !prev)}>
             {isVisible ? (
@@ -91,8 +109,10 @@ const SigninScreen = () => {
 
       <Text style={styles.forgotText}>Forgot Password?</Text>
 
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Sign Up</Text>
+      <TouchableOpacity style={styles.button} onPress={onSignin}>
+        <Text style={styles.buttonText}>
+          {loading ? "loading..." : "Sign Up"}
+        </Text>
       </TouchableOpacity>
 
       <Text style={styles.terms}>Or continue with</Text>

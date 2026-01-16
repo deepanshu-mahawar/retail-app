@@ -50,6 +50,7 @@ export default function RootLayout() {
         <Stack.Screen name="signup" />
         <Stack.Screen name="signin" />
         <Stack.Screen name="verification" />
+        <Stack.Screen name="main" />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
