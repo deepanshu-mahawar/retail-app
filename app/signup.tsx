@@ -35,10 +35,11 @@ const SignupScreen = () => {
     try {
       setLoading(true);
 
-      await axios.post("http://localhost:5000/api/auth/signup", user);
+      await axios.post("http://192.168.1.9:5000/api/auth/signup", user);
 
       Alert.alert("success", "Signup successful");
       setUser({ fullname: "", email: "", password: "" });
+      router.push({ pathname: "/verification", params: { email: user.email } });
     } catch (error) {
       Alert.alert("Error", "Signup failed");
     } finally {
@@ -124,7 +125,7 @@ const SignupScreen = () => {
         </View>
       </View>
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={onSignup}>
         <Text style={styles.buttonText}>
           {loading ? "Loading..." : "Sign Up"}
         </Text>

@@ -5,17 +5,23 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Alert,
 } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import axios from "axios";
 
-const OTP_LENGTH = 4;
+const OTP_LENGTH = 6;
 
 const VerificationScreen = () => {
   const router = useRouter();
-  const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));
+  const { email } = useLocalSearchParams<{ email: string }>();
+
+  const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
+  const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(30);
-  const inputs = useRef([]);
+
+  const inputs = useRef<TextInput[]>([]);
 
   useEffect(() => {
     if (timer === 0) return;
@@ -25,31 +31,54 @@ const VerificationScreen = () => {
     return () => clearInterval(interval);
   }, [timer]);
 
-  // const handleChange = (value: string, index: number) => {
-  //   if (!/^\d?$/.test(value)) return;
+  const handleChange = (value: string, index: number) => {
+    if (!/^\d?$/.test(value)) return;
 
-  //   const newOtp = [...otp];
-  //   newOtp[index] = value;
-  //   setOtp(newOtp);
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
 
-  //   if (value && index < OTP_LENGTH - 1) {
-  //     inputs.current[index + 1].focus();
-  //   }
-  // };
+    if (value && index < OTP_LENGTH - 1) {
+      inputs.current[index + 1].focus();
+    }
+  };
 
-  // const handleBackspace = (value: string, index: number) => {
-  //   if (!value && index > 0) {
-  //     inputs.current[index - 1].focus();
-  //   }
-  // };
+  const handleBackspace = (index: number) => {
+    if (otp[index] === "" && index > 0) {
+      inputs.current[index - 1].focus();
+    }
+  };
+
+  const verifyOtp = async () => {
+    const otpValue = otp.join("");
+
+    if (otpValue.length !== OTP_LENGTH) {
+      Alert.alert("Error", "Please enter 6 digit OTP");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      await axios.post("http://192.168.1.9:5000/api/auth/verify-otp", {
+        email,
+        otp: otpValue,
+      });
+
+      Alert.alert("Success", "Email verified successfully");
+      router.replace("/signin");
+    } catch (error: any) {
+      Alert.alert(
+        "Error",
+        error?.response?.data?.message || "OTP verification failed"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const resendCode = () => {
     setTimer(30);
-  };
-
-  const verifyOtp = () => {
-    const code = otp.join("");
-    console.log("OTP:", code);
   };
 
   return (
@@ -60,22 +89,25 @@ const VerificationScreen = () => {
 
       <Text style={styles.title}>Verification</Text>
       <Text style={styles.subtitle}>Enter the 4-digit code sent to</Text>
-      <Text style={styles.email}>example@gmail.com</Text>
+      <Text style={styles.email}>{email}</Text>
 
       <View style={styles.otpContainer}>
         {otp.map((digit, index) => (
           <TextInput
             key={index}
-            // ref={(ref) => (inputs.current[index] = ref)}
+            ref={(ref) => {
+              if (ref) inputs.current[index] = ref;
+            }}
             style={[styles.otpInput, digit && styles.activeInput]}
-            value={digit}
-            // onChangeText={(val) => handleChange(val, index)}
-            // onKeyPress={({ nativeEvent }) =>
-            //   nativeEvent.key === "Backspace" && handleBackspace(digit, index)
-            // }
             keyboardType="number-pad"
             maxLength={1}
-            autoFocus={index === 0}
+            value={digit}
+            onChangeText={(value) => handleChange(value, index)}
+            onKeyPress={({ nativeEvent }) => {
+              if (nativeEvent.key === "Backspace") {
+                handleBackspace(index);
+              }
+            }}
           />
         ))}
       </View>
@@ -89,8 +121,10 @@ const VerificationScreen = () => {
         </TouchableOpacity>
       )}
 
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Verify</Text>
+      <TouchableOpacity style={styles.button} onPress={verifyOtp}>
+        <Text style={styles.buttonText}>
+          {loading ? "Verifying..." : "Verify"}
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -198,3 +232,157 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins_400Regular",
   },
 });
+
+// import React, { useRef, useState } from "react";
+// import {
+//   View,
+//   Text,
+//   TextInput,
+//   TouchableOpacity,
+//   StyleSheet,
+//   Alert,
+// } from "react-native";
+// import axios from "axios";
+// import { useRouter, useLocalSearchParams } from "expo-router";
+
+// const OTP_LENGTH = 6;
+
+// const VerifyOtpScreen = () => {
+//   const router = useRouter();
+//   const { email } = useLocalSearchParams<{ email: string }>();
+
+//   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
+//   const [loading, setLoading] = useState(false);
+
+//   const inputs = useRef<TextInput[]>([]);
+
+//   const handleChange = (value: string, index: number) => {
+//     if (!/^\d?$/.test(value)) return;
+
+//     const newOtp = [...otp];
+//     newOtp[index] = value;
+//     setOtp(newOtp);
+
+//     if (value && index < OTP_LENGTH - 1) {
+//       inputs.current[index + 1].focus();
+//     }
+//   };
+
+//   const handleBackspace = (index: number) => {
+//     if (otp[index] === "" && index > 0) {
+//       inputs.current[index - 1].focus();
+//     }
+//   };
+
+//   const verifyOtp = async () => {
+//     const otpValue = otp.join("");
+
+//     if (otpValue.length !== OTP_LENGTH) {
+//       Alert.alert("Error", "Please enter 6 digit OTP");
+//       return;
+//     }
+
+//     try {
+//       setLoading(true);
+
+//       await axios.post("http://192.168.1.9:5000/api/auth/verify-otp", {
+//         email,
+//         otp: otpValue,
+//       });
+
+//       Alert.alert("Success", "Email verified successfully");
+//       router.replace("/signin");
+//     } catch (error: any) {
+//       Alert.alert(
+//         "Error",
+//         error?.response?.data?.message || "OTP verification failed"
+//       );
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <View style={styles.container}>
+//       <Text style={styles.title}>Verify OTP</Text>
+//       <Text style={styles.subtitle}>
+//         Enter the 6-digit code sent to {email}
+//       </Text>
+
+//       <View style={styles.otpContainer}>
+//         {otp.map((digit, index) => (
+//           <TextInput
+//             key={index}
+//             ref={(ref) => {
+//               if (ref) inputs.current[index] = ref;
+//             }}
+//             style={styles.otpInput}
+//             keyboardType="number-pad"
+//             maxLength={1}
+//             value={digit}
+//             onChangeText={(value) => handleChange(value, index)}
+//             onKeyPress={({ nativeEvent }) => {
+//               if (nativeEvent.key === "Backspace") {
+//                 handleBackspace(index);
+//               }
+//             }}
+//           />
+//         ))}
+//       </View>
+
+//       <TouchableOpacity style={styles.button} onPress={verifyOtp}>
+//         <Text style={styles.buttonText}>
+//           {loading ? "Verifying..." : "Verify"}
+//         </Text>
+//       </TouchableOpacity>
+//     </View>
+//   );
+// };
+
+// export default VerifyOtpScreen;
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     padding: 24,
+//     justifyContent: "center",
+//     backgroundColor: "#fff",
+//   },
+//   title: {
+//     fontSize: 28,
+//     fontWeight: "700",
+//     textAlign: "center",
+//     marginBottom: 10,
+//   },
+//   subtitle: {
+//     textAlign: "center",
+//     color: "#666",
+//     marginBottom: 30,
+//   },
+//   otpContainer: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     marginBottom: 30,
+//   },
+//   otpInput: {
+//     width: 48,
+//     height: 56,
+//     borderWidth: 1,
+//     borderColor: "#ccc",
+//     borderRadius: 10,
+//     textAlign: "center",
+//     fontSize: 20,
+//     fontWeight: "600",
+//   },
+//   button: {
+//     backgroundColor: "#000",
+//     paddingVertical: 14,
+//     borderRadius: 10,
+//   },
+//   buttonText: {
+//     color: "#fff",
+//     textAlign: "center",
+//     fontSize: 16,
+//     fontWeight: "600",
+//   },
+// });
